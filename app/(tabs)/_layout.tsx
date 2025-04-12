@@ -1,45 +1,103 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+// app/tab-layout.tsx
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import React from "react";
+import { Tabs } from "expo-router";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { Text, View } from "react-native";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+const TabLayout: React.FC = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: "#4F46E5",
+        tabBarInactiveTintColor: "#3B82F680",
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          borderTopWidth: 1,
+          height: 75,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          headerShown: false,
+
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon icon="home" color={color} name="Home" focused={focused} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="book-appointment"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Book Appointment",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon="calendar-plus"
+              color={color}
+              name="Book"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="emergency-institutions-filter"
+        options={{
+          title: "Emergency Services",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon="hospital"
+              color={color}
+              name="Emergency"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          headerShown: false,
+
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              icon="user"
+              color={color}
+              name="Profile"
+              focused={focused}
+            />
+          ),
         }}
       />
     </Tabs>
   );
+};
+
+export default TabLayout;
+
+interface TabIconProps {
+  icon: React.ComponentProps<typeof FontAwesome5>["name"];
+  color: string;
+  name: string;
+  focused: boolean;
 }
+
+const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
+  return (
+    <View className="min-w-24 flex justify-center items-center gap-1 mt-3 ">
+      <FontAwesome5 name={icon} size={24} color={color} />
+      <Text
+        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
+        style={{ color: color }}
+      >
+        {name}
+      </Text>
+    </View>
+  );
+};
